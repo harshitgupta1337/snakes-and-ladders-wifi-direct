@@ -1,0 +1,255 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="example.com.snake.GameActivity"
+    android:id="@+id/full_layout">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:weightSum="1">
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.27">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="@dimen/game_box_size"
+                    android:layout_height="@dimen/game_box_size"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="N"
+                    android:id="@+id/point40"
+                    android:layout_column="0" />
+
+                <TextView
+                    android:layout_width="@dimen/game_box_size"
+                    android:layout_height="@dimen/game_box_size"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="N"
+                    android:id="@+id/point41"
+                    android:layout_column="1" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="N"
+                    android:id="@+id/point42"
+                    android:layout_column="2" />
+
+                <TextView
+                    android:layout_width="@dimen/game_box_size"
+                    android:layout_height="@dimen/game_box_size"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="N"
+                    android:id="@+id/point43"
+                    android:layout_column="3" />
+
+                <TextView
+                    android:layout_width="@dimen/game_box_size"
+                    android:layout_height="@dimen/game_box_size"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="N"
+                    android:id="@+id/point44"
+                    android:layout_column="4" />
+            </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="@dimen/game_box_size"
+                    android:layout_height="@dimen/game_box_size"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="N"
+                    android:id="@+id/point30"
+                    android:layout_column="0" />
+
+                <TextView
+                    android:layout_width="@dimen/game_box_size"
+                    android:layout_height="@dimen/game_box_size"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="N"
+                    android:id="@+id/point31"
+                    android:layout_column="1" />
+
+                <TextView
+                    android:layout_width="@dimen/game_box_size"
+                    android:layout_height="@dimen/game_box_size"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="N"
+                    android:id="@+id/point32"
+                    android:layout_column="2" />
+
+                <TextView
+                    android:layout_width="@dimen/game_box_size"
+                    android:layout_height="@dimen/game_box_size"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="N"
+                    android:id="@+id/point33"
+                    android:layout_column="3" />
+
+                <TextView
+                    android:layout_width="@dimen/game_box_size"
+                    android:layout_height="@dimen/game_box_size"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="N"
+                    android:id="@+id/point34"
+                    android:layout_column="4" />
+            </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="@dimen/game_box_size"
+                    android:layout_height="@dimen/game_box_size"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="N"
+                    android:id="@+id/point20"
+                    android:layout_column="0" />
+
+                <TextView
+                    android:layout_width="@dimen/game_box_size"
+                    android:layout_height="@dimen/game_box_size"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="N"
+                    android:id="@+id/point21"
+                    android:layout_column="1" />
+
+                <TextView
+                    android:layout_width="@dimen/game_box_size"
+                    android:layout_height="@dimen/game_box_size"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="N"
+                    android:id="@+id/point22"
+                    android:layout_column="2" />
+
+                <TextView
+                    android:layout_width="@dimen/game_box_size"
+                    android:layout_height="@dimen/game_box_size"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="N"
+                    android:id="@+id/point23"
+                    android:layout_column="3" />
+
+                <TextView
+                    android:layout_width="@dimen/game_box_size"
+                    android:layout_height="@dimen/game_box_size"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="N"
+                    android:id="@+id/point24"
+                    android:layout_column="4" />
+            </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="@dimen/game_box_size"
+                    android:layout_height="@dimen/game_box_size"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="N"
+                    android:id="@+id/point10"
+                    android:layout_column="0" />
+
+                <TextView
+                    android:layout_width="@dimen/game_box_size"
+                    android:layout_height="@dimen/game_box_size"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="N"
+                    android:id="@+id/point11"
+                    android:layout_column="1" />
+
+                <TextView
+                    android:layout_width="@dimen/game_box_size"
+                    android:layout_height="@dimen/game_box_size"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="N"
+                    android:id="@+id/point12"
+                    android:layout_column="2" />
+
+                <TextView
+                    android:layout_width="@dimen/game_box_size"
+                    android:layout_height="@dimen/game_box_size"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="N"
+                    android:id="@+id/point13"
+                    android:layout_column="3" />
+
+                <TextView
+                    android:layout_width="@dimen/game_box_size"
+                    android:layout_height="@dimen/game_box_size"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="N"
+                    android:id="@+id/point14"
+                    android:layout_column="4" />
+            </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="@dimen/game_box_size"
+                    android:layout_height="@dimen/game_box_size"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="N"
+                    android:id="@+id/point00"
+                    android:layout_column="0" />
+
+                <TextView
+                    android:layout_width="@dimen/game_box_size"
+                    android:layout_height="@dimen/game_box_size"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="N"
+                    android:id="@+id/point01"
+                    android:layout_column="1" />
+
+                <TextView
+                    android:layout_width="@dimen/game_box_size"
+                    android:layout_height="@dimen/game_box_size"
+                    android:background="@drawable/back"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="N"
+                    android:id="@+id/point02"
+                    android:layout_column="2" />
+
+                <TextView
+                    android:layout_width="@dimen/game_box_size"
+                    android:layout_height="@dimen/game_box_size"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="N"
+                    android:id="@+id/point03"
+                    android:layout_column="3" />
+
+                <TextView
+                    android:layout_width="@dimen/game_box_size"
+                    android:layout_height="@dimen/game_box_size"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="N"
+                    android:id="@+id/point04"
+                    android:layout_column="4" />
+            </TableRow>
+        </TableLayout>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Roll Dice"
+            android:id="@+id/rollDiceButton"
+            android:layout_weight="0.05" />
+    </LinearLayout>
+</RelativeLayout>
