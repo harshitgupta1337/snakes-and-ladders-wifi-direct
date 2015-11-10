@@ -27,7 +27,7 @@ import org.sca2015.teenpatti.org.sca2015.teenpatti.connection.GameConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements WifiP2pManager.PeerListListener {
+public class MainActivity extends AbstractActivity implements WifiP2pManager.PeerListListener {
     private List<WifiP2pDevice> peers = new ArrayList<WifiP2pDevice>();
     private static final String TAG = "MainActivity";
     WifiP2pManager mManager;
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements WifiP2pManager.Pe
                 processMessage(msgStr, sender);
             }
         };
-        gameConnection = new GameConnection(mUpdateHandler, this);
+        gameConnection = new GameConnection(8080, mUpdateHandler, this);
         connectedPeers = new ArrayList<String>();
 
         Button button = (Button)findViewById(R.id.button);
@@ -127,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements WifiP2pManager.Pe
         }
     }
 
+    @Override
     public void processMessage(String msg, String sender){
         try {
             JSONObject reader = new JSONObject(msg);

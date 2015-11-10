@@ -1,6 +1,8 @@
 package org.sca2015.teenpatti;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,14 +11,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.sca2015.teenpatti.org.sca2015.teenpatti.connection.GameConnection;
+
 import java.util.HashMap;
 import java.util.Map;
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AbstractActivity {
     String id;
     Map<String, Integer> currentGameState;
     boolean canMove;
     boolean myTurn;
+    private Handler mUpdateHandler;
+    GameConnection gameConnection;
     Map<Integer, Integer> snakesAndLadders;
 
     @Override
@@ -37,6 +45,19 @@ public class GameActivity extends AppCompatActivity {
                     makeMove();
             }
         });
+
+        mUpdateHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                String msgStr = msg.getData().getString("msg");
+                Toast.makeText(GameActivity.this, "MSG : "+msgStr,
+                        Toast.LENGTH_SHORT).show();
+                String sender = msg.getData().getString("sender").substring(1);
+                //processMessage(msgStr, sender);
+            }
+        };
+        //gameConnection = new GameConnection(8081, mUpdateHandler, this);
+
 
     }
 
@@ -102,5 +123,22 @@ public class GameActivity extends AppCompatActivity {
 
     private void updateGameState(){
         // UI Code
+    }
+
+    @Override
+    void processMessage(String msg, String sender) {
+        try {
+            JSONObject reader = new JSONObject(msg);
+            String messageType = reader.getString("TYPE");
+            if(messageType.equals("STATE")){
+                handleGameState(reader.getString("DATA"), sender);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleGameState(String gameState, String sender){
+        
     }
 }

@@ -7,7 +7,7 @@ import android.os.Message;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.sca2015.teenpatti.MainActivity;
+import org.sca2015.teenpatti.AbstractActivity;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -20,19 +20,21 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class GameConnection {
+    int port;
     private ServerSocket serverSocket;
     Handler mHandler;
-    MainActivity mainActivity;
+    AbstractActivity activity;
 
-    public GameConnection(Handler mHandler, MainActivity mainActivity){
+    public GameConnection(int port, Handler mHandler, AbstractActivity abstractActivity){
+        this.port = port;
         this.mHandler = mHandler;
-        this.mainActivity = mainActivity;
+        this.activity = abstractActivity;
         Thread socketServerThread = new Thread(new SocketServerThread());
         socketServerThread.start();
     }
 
     public void sendMessage(String ip, String msg) {
-        MyClientTask myClientTask = new MyClientTask(ip, 8080, msg);
+        MyClientTask myClientTask = new MyClientTask(ip, port, msg);
         myClientTask.execute();
     }
 
@@ -50,13 +52,13 @@ public class GameConnection {
 
     private class SocketServerThread extends Thread {
 
-        static final int SocketServerPORT = 8080;
+        //static final int SocketServerPORT = port;
         int count = 0;
 
         @Override
         public void run() {
             try {
-                serverSocket = new ServerSocket(SocketServerPORT);
+                serverSocket = new ServerSocket(port);
 
                 while (true) {
                     Socket socket = serverSocket.accept();
