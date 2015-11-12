@@ -10,7 +10,6 @@ public class Card {
     public static int DIAMOND = 3;
     public static int HEART = 4;
 
-    public static int ACE = 5;
     public static int TWO = 6;
     public static int THREE = 7;
     public static int FOUR = 8;
@@ -23,6 +22,7 @@ public class Card {
     public static int JACK = 15;
     public static int QUEEN = 16;
     public static int KING = 17;
+    public static int ACE = 18;
 
     int suit;
     int number;
