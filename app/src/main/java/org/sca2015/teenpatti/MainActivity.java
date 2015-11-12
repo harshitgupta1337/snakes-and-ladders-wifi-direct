@@ -9,7 +9,6 @@ import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -22,7 +21,8 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.sca2015.teenpatti.org.sca2015.teenpatti.connection.GameConnection;
+import org.sca2015.teenpatti.connection.GameConnection;
+import org.sca2015.teenpatti.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,10 +39,6 @@ public class MainActivity extends AbstractActivity implements WifiP2pManager.Pee
     TpConnectionInfoListener mConnectionInfoListener;
     private boolean isOwner;
     private List<String> connectedPeers;
-
-    public void showToast(String text){
-        Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
-    }
 
     @Override
     protected void onResume() {
@@ -108,21 +104,20 @@ public class MainActivity extends AbstractActivity implements WifiP2pManager.Pee
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            openGameActivity.putExtra("peers", peers.toString());
+            openGameActivity.putExtra(Constants.PEERS_LIST, peers.toString());
         }
-
-        openGameActivity.putExtra("isOwner", isOwner());
+        openGameActivity.putExtra(Constants.IS_DEALER, isOwner());
         startActivity(openGameActivity);
     }
 
     private void handleControlMessage(String function, String sender){
-        showToast("Got control msg : "+function);
+        //showToast("Got control msg : "+function);
         if(function.equals("INIT")){
             if(!connectedPeers.contains(sender))
                 connectedPeers.add(sender);
             updateConnectedPeers();
         }else if(function.equals("START_GAME")){
-            showToast("START GAME RECEIVED");
+            //showToast("START GAME RECEIVED");
             startGame();
         }
     }

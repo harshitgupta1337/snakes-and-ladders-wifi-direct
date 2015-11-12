@@ -1,13 +1,16 @@
-package org.sca2015.teenpatti.org.sca2015.teenpatti.connection;
+package org.sca2015.teenpatti.connection;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.sca2015.teenpatti.AbstractActivity;
+import org.sca2015.teenpatti.utils.Card;
+import org.sca2015.teenpatti.utils.Constants;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -18,6 +21,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.List;
 
 public class GameConnection {
     int port;
@@ -47,6 +51,25 @@ public class GameConnection {
             e.printStackTrace();
         }
 
+        sendMessage(destAddr, initMsg.toString());
+    }
+
+    public void sendDealtCards(List<Card> cards, String destAddr){
+        JSONObject initMsg = new JSONObject();
+        try {
+            initMsg.put("TYPE", "DEALT_CARDS");
+            JSONArray arr = new JSONArray();
+            for(Card card : cards){
+                JSONObject obj = new JSONObject();
+                obj.put(Constants.CARD_SUITE, card.getSuit());
+                obj.put(Constants.CARD_NUMBER, card.getNumber());
+                arr.put(obj);
+            }
+            initMsg.put("CARDS", arr);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        activity.showToast("Sending msg "+initMsg.toString()+" to "+destAddr);
         sendMessage(destAddr, initMsg.toString());
     }
 

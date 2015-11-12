@@ -1,21 +1,28 @@
 package org.sca2015.teenpatti;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.sca2015.teenpatti.org.sca2015.teenpatti.connection.GameConnection;
+import org.sca2015.teenpatti.connection.GameConnection;
+import org.sca2015.teenpatti.utils.Card;
+import org.sca2015.teenpatti.utils.Constants;
+import org.sca2015.teenpatti.utils.Deck;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GameActivity extends AbstractActivity {
@@ -23,9 +30,10 @@ public class GameActivity extends AbstractActivity {
     Map<String, Integer> currentGameState;
     boolean canMove;
     boolean myTurn;
+    List<String> peers;
+    boolean isDealer;
     private Handler mUpdateHandler;
     GameConnection gameConnection;
-    Map<Integer, Integer> snakesAndLadders;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,15 +42,35 @@ public class GameActivity extends AbstractActivity {
 
         currentGameState = new HashMap<String, Integer>();
         canMove = false;
-        snakesAndLadders = new HashMap<Integer, Integer>();
         myTurn = false;
 
-        Button rollDiceButton = (Button)findViewById(R.id.rollDiceButton);
-        rollDiceButton.setOnClickListener(new View.OnClickListener() {
+        Intent intent = getIntent();
+        setIsDealer(intent.getBooleanExtra(Constants.IS_DEALER, false));
+
+        if(isDealer()){
+            peers = new ArrayList<String>();
+            peers.add("192.168.49.1");
+            String peersStr = intent.getStringExtra(Constants.PEERS_LIST);
+            try {
+                JSONObject reader = new JSONObject(peersStr);
+                JSONArray peersListArr = reader.getJSONArray("peers");
+                for(int i=0;i<peersListArr.length();i++){
+                    peers.add(peersListArr.getString(i));
+                }
+                //showToast(peers.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        } else{
+            peers = null;
+        }
+
+        Button dealButton = (Button)findViewById(R.id.dealButton);
+        dealButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(myTurn)
-                    makeMove();
+                deal();
             }
         });
 
@@ -53,12 +81,15 @@ public class GameActivity extends AbstractActivity {
                 Toast.makeText(GameActivity.this, "MSG : "+msgStr,
                         Toast.LENGTH_SHORT).show();
                 String sender = msg.getData().getString("sender").substring(1);
-                //processMessage(msgStr, sender);
+                processMessage(msgStr, sender);
             }
         };
-        //gameConnection = new GameConnection(8081, mUpdateHandler, this);
+        gameConnection = new GameConnection(8081, mUpdateHandler, this);
 
+        if(!isDealer())
+            ((TextView)findViewById(R.id.dealButton)).setVisibility(View.INVISIBLE);
 
+        Deck.initialize();
     }
 
     @Override
@@ -83,38 +114,25 @@ public class GameActivity extends AbstractActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void showToast(String text){
-        Context context = getApplicationContext();
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
+    private void deal(){
+        List<Card> cards = Deck.shuffle(3 * peers.size());
+        sendCardsToPeers(cards);
+        updateGameState();
+        sendGameState();
     }
 
-    private int checkSnakeAndLadder(int nextPosition){
-        if(snakesAndLadders.containsKey(nextPosition))
-            return snakesAndLadders.get(nextPosition);
-        else
-            return nextPosition;
-    }
-
-    private void makeMove(){
-        int diceRoll = (int) (Math.random()*6.0 + 1);
-
-        if(canMove){
-            int currentPosition = currentGameState.get(id);
-            int nextPosition = currentPosition + diceRoll;
-            int finalPosition = checkSnakeAndLadder(nextPosition);
-            currentGameState.put(id, finalPosition);
-            updateGameState();
-        } else{
-            if(diceRoll == 6){
-                canMove = true;
-                showToast("You can move now.");
+    private void sendCardsToPeers(List<Card> cards){
+        //showToast("No of cards = "+cards.size());
+        List<Card> cardsForPeer = new ArrayList<Card>();
+        int i=0;
+        for(Card card : cards){
+            i++;
+            cardsForPeer.add(card);
+            if(i%3==0){
+                gameConnection.sendDealtCards(cardsForPeer, peers.get((i/3)-1));
+                cardsForPeer = new ArrayList<Card>();
             }
         }
-
-        sendGameState();
     }
 
     private void sendGameState(){
@@ -132,13 +150,42 @@ public class GameActivity extends AbstractActivity {
             String messageType = reader.getString("TYPE");
             if(messageType.equals("STATE")){
                 handleGameState(reader.getString("DATA"), sender);
-            }
+            } else if(messageType.equals("DEALT_CARDS"))
+                updateDealtCards(reader.getJSONArray("CARDS"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
+    private void updateDealtCards(JSONArray cards) {
+        int cardSuite = 0, cardNumber;
+        try {
+            cardSuite = ((JSONObject)cards.get(0)).getInt(Constants.CARD_SUITE);
+            cardNumber = ((JSONObject)cards.get(0)).getInt(Constants.CARD_NUMBER);
+            ((TextView)findViewById(R.id.card0)).setText(cardSuite+"\t"+cardNumber);
+
+            cardSuite = ((JSONObject)cards.get(1)).getInt(Constants.CARD_SUITE);
+            cardNumber = ((JSONObject)cards.get(1)).getInt(Constants.CARD_NUMBER);
+            ((TextView)findViewById(R.id.card1)).setText(cardSuite+"\t"+cardNumber);
+
+            cardSuite = ((JSONObject)cards.get(2)).getInt(Constants.CARD_SUITE);
+            cardNumber = ((JSONObject)cards.get(2)).getInt(Constants.CARD_NUMBER);
+            ((TextView)findViewById(R.id.card2)).setText(cardSuite+"\t"+cardNumber);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     private void handleGameState(String gameState, String sender){
-        
+
+    }
+
+    public boolean isDealer() {
+        return isDealer;
+    }
+
+    public void setIsDealer(boolean isDealer) {
+        this.isDealer = isDealer;
     }
 }
