@@ -25,7 +25,12 @@ import java.util.List;
 import java.util.Map;
 
 public class GameActivity extends AbstractActivity {
+
+    public static int INITIAL_BET = 100;
+    public static int INITIAL_AMOUNT = 500;
+
     String id;
+    String groupOwnerIp;
     Map<String, Integer> currentGameState;
     boolean canMove;
     boolean myTurn;
@@ -33,22 +38,29 @@ public class GameActivity extends AbstractActivity {
     boolean isDealer;
     private Handler mUpdateHandler;
     GameConnection gameConnection;
+    int peerToMove;
+    int amount;
+    int currentBet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+        ((Button)findViewById(R.id.betButton)).setVisibility(View.INVISIBLE);
+        ((Button)findViewById(R.id.passButton)).setVisibility(View.INVISIBLE);
+
         currentGameState = new HashMap<String, Integer>();
         canMove = false;
         myTurn = false;
-
+        amount = INITIAL_AMOUNT;
+        currentBet = INITIAL_BET;
         Intent intent = getIntent();
         setIsDealer(intent.getBooleanExtra(Constants.IS_DEALER, false));
-
+        groupOwnerIp = intent.getStringExtra(Constants.GROUP_OWNER_IP);
         if(isDealer()){
             peers = new ArrayList<String>();
-            peers.add("192.168.49.1");
+            peers.add("127.0.0.1");
             String peersStr = intent.getStringExtra(Constants.PEERS_LIST);
             try {
                 JSONObject reader = new JSONObject(peersStr);
@@ -60,7 +72,6 @@ public class GameActivity extends AbstractActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
         } else{
             peers = null;
         }
@@ -70,6 +81,22 @@ public class GameActivity extends AbstractActivity {
             @Override
             public void onClick(View v) {
                 deal();
+                peerToMove = 0;
+                gameConnection.sendTurnInfo(currentBet, peers.get(peerToMove));
+            }
+        });
+        Button betButton = (Button)findViewById(R.id.betButton);
+        betButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bet();
+            }
+        });
+        Button passButton = (Button)findViewById(R.id.passButton);
+        passButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pass();
             }
         });
 
@@ -89,6 +116,19 @@ public class GameActivity extends AbstractActivity {
             ((TextView)findViewById(R.id.dealButton)).setVisibility(View.INVISIBLE);
 
         Deck.initialize();
+
+        peerToMove = 0;
+
+    }
+
+    private void bet() {
+        gameConnection.sendBet(groupOwnerIp, 100);
+        toggleTurn(false);
+    }
+
+    private void pass() {
+        gameConnection.sendPass(groupOwnerIp);
+        toggleTurn(false);
     }
 
     @Override
@@ -114,6 +154,7 @@ public class GameActivity extends AbstractActivity {
     }
 
     private void deal(){
+        showToast("Inside deal()");
         List<Card> cards = Deck.shuffle(3 * peers.size());
         sendCardsToPeers(cards);
         updateGameState();
@@ -121,7 +162,6 @@ public class GameActivity extends AbstractActivity {
     }
 
     private void sendCardsToPeers(List<Card> cards){
-        //showToast("No of cards = "+cards.size());
         List<Card> cardsForPeer = new ArrayList<Card>();
         int i=0;
         for(Card card : cards){
@@ -151,9 +191,48 @@ public class GameActivity extends AbstractActivity {
                 handleGameState(reader.getString("DATA"), sender);
             } else if(messageType.equals("DEALT_CARDS"))
                 updateDealtCards(reader.getJSONArray("CARDS"));
+            else if(messageType.equals("TURN")){
+                executeTurn(msg);
+            } else if(messageType.equals("MOVE"))
+                handleMove(msg);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private void executeTurn(String msg) throws JSONException {
+        toggleTurn(true);
+        JSONObject reader = new JSONObject(msg);
+        int currentBet = reader.getInt("CURRENT_BET");
+        ((TextView)findViewById(R.id.currentBetView)).setText("Current Bet : "+currentBet);
+        ((TextView)findViewById(R.id.betView)).setText(""+currentBet);
+    }
+
+    private void handleMove(String msg) throws JSONException {
+        JSONObject reader = new JSONObject(msg);
+
+        if(reader.getString("MOVE").equals("BET"))
+            handleBet(reader.getInt("AMOUNT"));
+        else if(reader.getString("MOVE").equals("PASS"))
+            handlePass();
+
+        peerToMove = (peerToMove + 1)%peers.size();
+
+        gameConnection.sendTurnInfo(currentBet, peers.get(peerToMove));
+        showToast("Sending turn info to "+peers.get(peerToMove));
+    }
+
+    private void handleBet(int amount) {
+    }
+
+    private void handlePass() {
+    }
+
+    private void toggleTurn(boolean enable) {
+        if (enable)
+            showToast("MY TURN");
+        ((Button)findViewById(R.id.betButton)).setVisibility((enable)?View.VISIBLE:View.INVISIBLE);
+        ((Button)findViewById(R.id.passButton)).setVisibility((enable)?View.VISIBLE:View.INVISIBLE);
     }
 
     private void updateDealtCards(JSONArray cards) {

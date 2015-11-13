@@ -84,13 +84,13 @@ public class MainActivity extends AbstractActivity implements WifiP2pManager.Pee
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startGame();
+                startGame("127.0.0.1");
             }
         });
 
     }
 
-    private void startGame(){
+    private void startGame(String groupOwnerIp){
         Intent openGameActivity = new Intent("org.sca2015.teenpatti.GAME");
         if(isOwner()) {
             for (String peer : connectedPeers)
@@ -106,6 +106,7 @@ public class MainActivity extends AbstractActivity implements WifiP2pManager.Pee
             }
             openGameActivity.putExtra(Constants.PEERS_LIST, peers.toString());
         }
+        openGameActivity.putExtra(Constants.GROUP_OWNER_IP, groupOwnerIp);
         openGameActivity.putExtra(Constants.IS_DEALER, isOwner());
         startActivity(openGameActivity);
     }
@@ -117,8 +118,8 @@ public class MainActivity extends AbstractActivity implements WifiP2pManager.Pee
                 connectedPeers.add(sender);
             updateConnectedPeers();
         }else if(function.equals("START_GAME")){
-            //showToast("START GAME RECEIVED");
-            startGame();
+            showToast("START GAME RECEIVED from "+sender);
+            startGame(sender);
         }
     }
 

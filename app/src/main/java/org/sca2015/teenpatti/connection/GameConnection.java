@@ -42,6 +42,28 @@ public class GameConnection {
         myClientTask.execute();
     }
 
+    public void sendBet(String groupOwnerIp, int amount){
+        JSONObject initMsg = new JSONObject();
+        try {
+            initMsg.put("TYPE", "MOVE");
+            initMsg.put("MOVE", "BET");
+            initMsg.put("AMOUNT", amount);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        sendMessage(groupOwnerIp, initMsg.toString());
+    }
+    public void sendPass(String groupOwnerIp){
+        JSONObject initMsg = new JSONObject();
+        try {
+            initMsg.put("TYPE", "MOVE");
+            initMsg.put("MOVE", "PASS");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        sendMessage(groupOwnerIp, initMsg.toString());
+    }
+
     public void sendControlMessage(String action, String destAddr) {
         JSONObject initMsg = new JSONObject();
         try {
@@ -70,6 +92,17 @@ public class GameConnection {
             e.printStackTrace();
         }
         activity.showToast("Sending msg "+initMsg.toString()+" to "+destAddr);
+        sendMessage(destAddr, initMsg.toString());
+    }
+
+    public void sendTurnInfo(int currentBet, String destAddr){
+        JSONObject initMsg = new JSONObject();
+        try {
+            initMsg.put("TYPE", "TURN");
+            initMsg.put("CURRENT_BET", currentBet);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         sendMessage(destAddr, initMsg.toString());
     }
 

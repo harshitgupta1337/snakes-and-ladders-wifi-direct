@@ -12,7 +12,7 @@ public class Deck {
     public static void initialize(){
         int i,j;
         for(i=Card.SPADE;i<=Card.HEART;i++){
-            for(j=Card.ACE;j<=Card.KING;j++){
+            for(j=Card.TWO;j<=Card.ACE;j++){
                 cards.add(new Card(i,j));
             }
         }
@@ -31,7 +31,6 @@ public class Deck {
             cardsCopy.get(r).setSuit(temp.getSuit());
             cardsCopy.get(r).setNumber(temp.getNumber());
         }
-
         return cardsCopy.subList(0, numCards);
     }
 

@@ -8,5 +8,5 @@ public class Constants {
     public static String PEERS_LIST = "PEERS_LIST";
     public static String CARD_SUITE = "CARD_SUITE";
     public static String CARD_NUMBER = "CARD_NUMBER";
-
+    public static String GROUP_OWNER_IP = "GROUP_OWNER_IP";
 }
