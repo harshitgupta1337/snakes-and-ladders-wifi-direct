@@ -41,6 +41,13 @@
             android:layout_gravity="right"
             android:layout_weight="0.05" />
 
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Pot : Balance : "
+            android:id="@+id/moneyView"
+            android:layout_weight="0.05" />
+
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -63,7 +70,11 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/betView"
             android:layout_gravity="center_horizontal"
-            android:layout_weight="0.05" />
+            android:layout_weight="0.05"
+            android:editable="true"
+            android:enabled="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
 
         <Button
             android:layout_width="fill_parent"
@@ -77,8 +88,32 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/passButton"
-            android:text="PASS"
+            android:text="CALL"
             android:layout_weight="0.05"
             android:layout_gravity="center_horizontal" />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/sideShowButton"
+            android:text="REQUEST SIDE SHOW"
+            android:layout_weight="0.05"
+            android:layout_gravity="center_horizontal" />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="SHOW"
+            android:id="@+id/showButton"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.05" />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="FOLD"
+            android:id="@+id/foldButton"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.05" />
     </LinearLayout>
 </RelativeLayout>

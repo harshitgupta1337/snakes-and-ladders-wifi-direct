@@ -21,6 +21,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameConnection {
@@ -76,7 +77,7 @@ public class GameConnection {
         sendMessage(destAddr, initMsg.toString());
     }
 
-    public void sendDealtCards(List<Card> cards, String destAddr){
+    public void sendDealtCards(List<Card> cards, int pot, String destAddr){
         JSONObject initMsg = new JSONObject();
         try {
             initMsg.put("TYPE", "DEALT_CARDS");
@@ -88,10 +89,11 @@ public class GameConnection {
                 arr.put(obj);
             }
             initMsg.put("CARDS", arr);
+            initMsg.put("POT", pot);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        activity.showToast("Sending msg "+initMsg.toString()+" to "+destAddr);
+        //activity.showToast("Sending msg "+initMsg.toString()+" to "+destAddr);
         sendMessage(destAddr, initMsg.toString());
     }
 
@@ -100,6 +102,190 @@ public class GameConnection {
         try {
             initMsg.put("TYPE", "TURN");
             initMsg.put("CURRENT_BET", currentBet);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        sendMessage(destAddr, initMsg.toString());
+    }
+
+    public void sendGameState(int currentBet, String destAddr, int pot, boolean isGameRunning) {
+        JSONObject initMsg = new JSONObject();
+        try {
+            initMsg.put("TYPE", Constants.GAME_STATE);
+            initMsg.put("CURRENT_BET", currentBet);
+            initMsg.put("POT", pot);
+            initMsg.put("GAME_ON", isGameRunning);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        sendMessage(destAddr, initMsg.toString());
+    }
+
+    public void sendGameLeavingMsg(String destAddr, int amount){
+        JSONObject initMsg = new JSONObject();
+        try {
+            initMsg.put("TYPE", Constants.GAME_LEAVING_MSG);
+            initMsg.put("AMOUNT", amount);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        sendMessage(destAddr, initMsg.toString());
+    }
+
+    public void sendSideShowResult(String groupOwnerIp, boolean attempted, boolean won){
+        JSONObject initMsg = new JSONObject();
+        try {
+            initMsg.put("TYPE", Constants.SIDE_SHOW_RESULT);
+            initMsg.put("ATTEMPTED", attempted);
+            initMsg.put("WON", won);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        sendMessage(groupOwnerIp, initMsg.toString());
+    }
+
+    public void sendSideShowRequest(String groupOwnerIp, List<Card> myCards) {
+        JSONObject initMsg = new JSONObject();
+        try {
+            initMsg.put("TYPE", Constants.SIDE_SHOW_REQUEST);
+            JSONArray arr = new JSONArray();
+            for(Card card : myCards){
+                JSONObject obj = new JSONObject();
+                obj.put(Constants.CARD_SUITE, card.getSuit());
+                obj.put(Constants.CARD_NUMBER, card.getNumber());
+                arr.put(obj);
+            }
+            initMsg.put("CARDS", arr);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        sendMessage(groupOwnerIp, initMsg.toString());
+    }
+
+    public void sendSideShowCards(String destAddr, List<Card> sideShowCards, String sideShowSender) {
+        JSONObject initMsg = new JSONObject();
+        try {
+            initMsg.put("TYPE", Constants.SIDE_SHOW_CARDS);
+            initMsg.put("REQUESTER", sideShowSender);
+            JSONArray arr = new JSONArray();
+            for(Card card : sideShowCards){
+                JSONObject obj = new JSONObject();
+                obj.put(Constants.CARD_SUITE, card.getSuit());
+                obj.put(Constants.CARD_NUMBER, card.getNumber());
+                arr.put(obj);
+            }
+            initMsg.put("CARDS", arr);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        sendMessage(destAddr, initMsg.toString());
+    }
+
+    public void sendWonSideShowNotification(String destAddr) {
+        JSONObject initMsg = new JSONObject();
+        try {
+            initMsg.put("TYPE", Constants.SIDE_SHOW_WON_NOTIFICATION);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        sendMessage(destAddr, initMsg.toString());
+    }
+
+    public void sendTwoPlayersRemainingMsg(String destAddr) {
+        JSONObject initMsg = new JSONObject();
+        try {
+            initMsg.put("TYPE", Constants.TWO_PLAYERS_REM);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        sendMessage(destAddr, initMsg.toString());
+    }
+
+    public void sendShowRequest(String groupOwnerIp, List<Card> myCards) {
+        JSONObject initMsg = new JSONObject();
+        try {
+            initMsg.put("TYPE", Constants.SHOW_REQUEST);
+            JSONArray arr = new JSONArray();
+            for(Card card : myCards){
+                JSONObject obj = new JSONObject();
+                obj.put(Constants.CARD_SUITE, card.getSuit());
+                obj.put(Constants.CARD_NUMBER, card.getNumber());
+                arr.put(obj);
+            }
+            initMsg.put("CARDS", arr);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        sendMessage(groupOwnerIp, initMsg.toString());
+    }
+
+    public void sendShowCards(String destAddr, List<Card> showCards, String showSender) {
+        JSONObject initMsg = new JSONObject();
+        try {
+            initMsg.put("TYPE", Constants.SHOW_CARDS);
+            initMsg.put("REQUESTER", showSender);
+            JSONArray arr = new JSONArray();
+            for(Card card : showCards){
+                JSONObject obj = new JSONObject();
+                obj.put(Constants.CARD_SUITE, card.getSuit());
+                obj.put(Constants.CARD_NUMBER, card.getNumber());
+                arr.put(obj);
+            }
+            initMsg.put("CARDS", arr);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        sendMessage(destAddr, initMsg.toString());
+    }
+
+    public void sendShowResult(String groupOwnerIp, boolean attempted, boolean won) {
+        JSONObject initMsg = new JSONObject();
+        try {
+            initMsg.put("TYPE", Constants.SHOW_RESULT);
+            initMsg.put("ATTEMPTED", attempted);
+            initMsg.put("WON", won);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        sendMessage(groupOwnerIp, initMsg.toString());
+    }
+
+    public void sendWonShowNotification(String destAddr) {
+        JSONObject initMsg = new JSONObject();
+        try {
+            initMsg.put("TYPE", Constants.SHOW_WON_NOTIFICATION);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        sendMessage(destAddr, initMsg.toString());
+    }
+
+    public void sendFold(String groupOwnerIp) {
+        JSONObject initMsg = new JSONObject();
+        try {
+            initMsg.put("TYPE", "MOVE");
+            initMsg.put("MOVE", "FOLD");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        sendMessage(groupOwnerIp, initMsg.toString());
+    }
+
+    public void sendIAmLeaving(String groupOwnerIp) {
+        JSONObject initMsg = new JSONObject();
+        try {
+            initMsg.put("TYPE", Constants.I_AM_LEAVING);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        sendMessage(groupOwnerIp, initMsg.toString());
+    }
+
+    public void sendYouWin(String destAddr, int pot) {
+        JSONObject initMsg = new JSONObject();
+        try {
+            initMsg.put("TYPE", Constants.YOU_WIN);
+            initMsg.put("POT", pot);
         } catch (JSONException e) {
             e.printStackTrace();
         }

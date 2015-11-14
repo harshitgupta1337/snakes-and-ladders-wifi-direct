@@ -4,4 +4,6 @@
     tools:context="org.sca2015.teenpatti.GameActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/leave_game"
+        android:title="@string/leave_game"/>
 </menu>
